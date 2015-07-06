@@ -76,14 +76,23 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 
 		if (_changedValues.containsKey("fontStyle")) {
 			this.fontStyle = _changedValues.get("fontStyle");
+			if (mAdapter != null) {
+				mAdapter.notifyDataSetChanged();
+			}
 		}
 
 		if (_changedValues.containsKey("fontColor")) {
 			this.fontColor = _changedValues.get("fontColor");
+			if (mAdapter != null) {
+				mAdapter.notifyDataSetChanged();
+			}
 		}
 
 		if (_changedValues.containsKey("fontSize")) {
 			this.fontSize = _changedValues.get("fontSize");
+			if (mAdapter != null) {
+				mAdapter.notifyDataSetChanged();
+			}
 		}
 
 		if (_changedValues.containsKey("index")) {
@@ -197,14 +206,15 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		this.model.setPropertyValue("index", position + "");
 		DoInvokeResult _result = new DoInvokeResult(this.model.getUniqueKey());
-		_result.setResultInteger(position);;
+		_result.setResultInteger(position);
 		this.model.getEventCenter().fireEvent("selectChanged", _result);
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
-		
+
 	}
 
 }
