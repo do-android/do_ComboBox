@@ -8,7 +8,7 @@ public class DoPageViewFactory implements DoIPageViewFactory {
 	private Activity currentActivity;
 	
 	@Override
-	public void closePage(String arg0, String arg1) {
+	public void closePage(String _animationType, String _data, int _continue) {
 		// TODO Auto-generated method stub
 
 	}
@@ -29,5 +29,4 @@ public class DoPageViewFactory implements DoIPageViewFactory {
 	public void setCurrentActivity(Activity currentActivity) {
 		this.currentActivity = currentActivity;
 	}
-
 }
