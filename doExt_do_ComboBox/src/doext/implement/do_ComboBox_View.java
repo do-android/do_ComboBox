@@ -95,11 +95,6 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			}
 		}
 
-		if (_changedValues.containsKey("index")) {
-			int _position = DoTextHelper.strToInt(_changedValues.get("index"), 0);
-			this.setSelection(_position);
-		}
-
 		if (_changedValues.containsKey("items")) {
 			String _items = _changedValues.get("items");
 			String[] _data = _items.split(",");
@@ -111,6 +106,17 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			if (mAdapter != null) {
 				mAdapter.notifyDataSetChanged();
 			}
+		}
+
+		if (_changedValues.containsKey("index")) {
+			int _position = DoTextHelper.strToInt(_changedValues.get("index"), 0);
+			if (_position < 0) {
+				_position = 0;
+			}
+			if (mAdapter != null && _position > mAdapter.getCount()) {
+				_position = mAdapter.getCount() - 1;
+			}
+			this.setSelection(_position);
 		}
 
 	}

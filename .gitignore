@@ -7,3 +7,4 @@ proguard/
 *.classpath
 /doExt_do_ComboBox/do_build.xml
 /doExt_do_ComboBox/libs/docore.jar
+/doExt_do_ComboBox/do_ComboBox.zip
