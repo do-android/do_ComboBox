@@ -113,7 +113,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			if (_position < 0) {
 				_position = 0;
 			}
-			if (mAdapter != null && _position > mAdapter.getCount()) {
+			if (mAdapter != null && _position > mAdapter.getCount() - 1) {
 				_position = mAdapter.getCount() - 1;
 			}
 			this.setSelection(_position);
