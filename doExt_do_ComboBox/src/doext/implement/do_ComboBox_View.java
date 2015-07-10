@@ -98,14 +98,9 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 		if (_changedValues.containsKey("items")) {
 			String _items = _changedValues.get("items");
 			String[] _data = _items.split(",");
-			if (mAdapter == null) {
-				mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
-				this.setAdapter(mAdapter);
-			}
-
-			if (mAdapter != null) {
-				mAdapter.notifyDataSetChanged();
-			}
+			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
+			this.setAdapter(mAdapter);
+			mAdapter.notifyDataSetChanged();
 		}
 
 		if (_changedValues.containsKey("index")) {
