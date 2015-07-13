@@ -36,6 +36,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	private String fontStyle;
 	private String fontColor;
 	private String fontSize;
+	private int position;
 
 	/**
 	 * 每个UIview都会引用一个具体的model实例；
@@ -101,17 +102,18 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
 			this.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
+			this.setSelection(position);
 		}
 
 		if (_changedValues.containsKey("index")) {
-			int _position = DoTextHelper.strToInt(_changedValues.get("index"), 0);
-			if (_position < 0) {
-				_position = 0;
+			position = DoTextHelper.strToInt(_changedValues.get("index"), 0);
+			if (position < 0) {
+				position = 0;
 			}
-			if (mAdapter != null && _position > mAdapter.getCount() - 1) {
-				_position = mAdapter.getCount() - 1;
+			if (mAdapter != null && position > mAdapter.getCount() - 1) {
+				position = mAdapter.getCount() - 1;
 			}
-			this.setSelection(_position);
+			this.setSelection(position);
 		}
 
 	}
