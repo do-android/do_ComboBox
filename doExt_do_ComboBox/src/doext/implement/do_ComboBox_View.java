@@ -36,6 +36,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	private String fontStyle;
 	private String fontColor;
 	private String fontSize;
+	private String textFlag;
 	private int position;
 
 	/**
@@ -89,6 +90,13 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			}
 		}
 
+		if (_changedValues.containsKey("textFlag")) {
+			this.textFlag = _changedValues.get("textFlag");
+			if (mAdapter != null) {
+				mAdapter.notifyDataSetChanged();
+			}
+		}
+		
 		if (_changedValues.containsKey("fontSize")) {
 			this.fontSize = _changedValues.get("fontSize");
 			if (mAdapter != null) {
@@ -139,6 +147,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	}
 
 	private void setTextViewStyle(TextView _tv) {
+		DoUIModuleHelper.setTextFlag(_tv, textFlag);
 		DoUIModuleHelper.setFontStyle(_tv, fontStyle);
 		_tv.setTextColor(DoUIModuleHelper.getColorFromString(fontColor, Color.BLACK));
 		_tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, DoUIModuleHelper.getDeviceFontSize(model, fontSize));
