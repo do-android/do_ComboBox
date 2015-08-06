@@ -46,6 +46,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 
 	public do_ComboBox_View(Context context) {
 		super(context);
+		this.setPadding(1, 0, 1, 0);
 	}
 
 	/**
