@@ -110,7 +110,6 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			String[] _data = _items.split(",");
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
 			this.setAdapter(mAdapter);
-			mAdapter.notifyDataSetChanged();
 			setSelection();
 		}
 
