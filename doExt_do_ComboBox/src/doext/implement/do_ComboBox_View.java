@@ -97,7 +97,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 				mAdapter.notifyDataSetChanged();
 			}
 		}
-		
+
 		if (_changedValues.containsKey("fontSize")) {
 			this.fontSize = _changedValues.get("fontSize");
 			if (mAdapter != null) {
@@ -111,19 +111,24 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
 			this.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
-			this.setSelection(position);
+			setSelection();
 		}
 
 		if (_changedValues.containsKey("index")) {
 			position = DoTextHelper.strToInt(_changedValues.get("index"), 0);
-			if (position < 0) {
-				position = 0;
-			}
-			if (mAdapter != null && position > mAdapter.getCount() - 1) {
-				position = mAdapter.getCount() - 1;
-			}
-			this.setSelection(position);
+			setSelection();
 		}
+
+	}
+
+	private void setSelection() {
+		if (position < 0) {
+			position = 0;
+		}
+		if (mAdapter != null && position > mAdapter.getCount() - 1) {
+			position = mAdapter.getCount() - 1;
+		}
+		this.setSelection(position);
 
 	}
 
