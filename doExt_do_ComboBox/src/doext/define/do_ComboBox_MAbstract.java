@@ -23,5 +23,6 @@ public abstract class do_ComboBox_MAbstract extends DoUIModule {
 		this.registProperty(new DoProperty("fontStyle", PropertyDataType.String, "normal", false));
 		this.registProperty(new DoProperty("index", PropertyDataType.String, "", false));
 		this.registProperty(new DoProperty("items", PropertyDataType.String, "", false));
+		this.registProperty(new DoProperty("textAlign", PropertyDataType.String, "left", true));
 	}
 }

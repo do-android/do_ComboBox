@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,6 +38,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	private String fontColor;
 	private String fontSize;
 	private String textFlag;
+	private String textAlign = "left";
 	private int position;
 
 	/**
@@ -82,6 +84,10 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			if (mAdapter != null) {
 				mAdapter.notifyDataSetChanged();
 			}
+		}
+
+		if (_changedValues.containsKey("textAlign")) {
+			this.textAlign = _changedValues.get("textAlign");
 		}
 
 		if (_changedValues.containsKey("fontColor")) {
@@ -154,6 +160,13 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	private void setTextViewStyle(TextView _tv) {
 		DoUIModuleHelper.setTextFlag(_tv, textFlag);
 		DoUIModuleHelper.setFontStyle(_tv, fontStyle);
+		if (this.textAlign.equals("center")) {
+			_tv.setGravity(Gravity.CENTER);
+		} else if (this.textAlign.equals("right")) {
+			_tv.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+		} else {
+			_tv.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+		}
 		_tv.setTextColor(DoUIModuleHelper.getColorFromString(fontColor, Color.BLACK));
 		_tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, DoUIModuleHelper.getDeviceFontSize(model, fontSize));
 	}
