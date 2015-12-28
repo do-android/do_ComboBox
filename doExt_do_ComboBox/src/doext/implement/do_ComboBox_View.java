@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -113,7 +114,10 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 
 		if (_changedValues.containsKey("items")) {
 			String _items = _changedValues.get("items");
-			String[] _data = _items.split(",");
+			String[] _data = new String[0];
+			if (!TextUtils.isEmpty(_items)) {
+				_data = _items.split(",");
+			}
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
 			this.setAdapter(mAdapter);
 			setSelection();
