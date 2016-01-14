@@ -15,12 +15,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import core.helper.DoJsonHelper;
+import core.helper.DoScriptEngineHelper;
 import core.helper.DoTextHelper;
 import core.helper.DoUIModuleHelper;
+import core.interfaces.DoIListData;
 import core.interfaces.DoIModuleTypeID;
 import core.interfaces.DoIScriptEngine;
 import core.interfaces.DoIUIModuleView;
 import core.object.DoInvokeResult;
+import core.object.DoMultitonModule;
 import core.object.DoUIModule;
 import doext.define.do_ComboBox_IMethod;
 import doext.define.do_ComboBox_MAbstract;
@@ -185,7 +189,14 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	 */
 	@Override
 	public boolean invokeSyncMethod(String _methodName, JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		// ...do something
+		if ("bindItems".equals(_methodName)) {
+			bindItems(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
+		if ("refreshItems".equals(_methodName)) {
+			refreshItems(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
 		return false;
 	}
 
@@ -206,6 +217,33 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	public boolean invokeAsyncMethod(String _methodName, JSONObject _dictParas, DoIScriptEngine _scriptEngine, String _callbackFuncName) {
 		// ...do something
 		return false;
+	}
+
+	private void bindItems(JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		String _address = DoJsonHelper.getString(_dictParas, "data", "");
+		if (_address == null || _address.length() <= 0)
+			throw new Exception("doListView 未指定相关的listview data参数！");
+		DoMultitonModule _multitonModule = DoScriptEngineHelper.parseMultitonModule(_scriptEngine, _address);
+		if (_multitonModule == null)
+			throw new Exception("doListView data参数无效！");
+		if (_multitonModule instanceof DoIListData) {
+			DoIListData _data = (DoIListData) _multitonModule;
+			int _count = _data.getCount();
+			String[] _newData = new String[_count];
+			for (int i = 0; i < _count; i++) {
+				_newData[i] = _data.getData(i).toString();
+			}
+			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _newData);
+			this.setAdapter(mAdapter);
+			setSelection();
+
+		}
+	}
+
+	private void refreshItems(JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) {
+		if (null != mAdapter) {
+			mAdapter.notifyDataSetChanged();
+		}
 	}
 
 	/**
