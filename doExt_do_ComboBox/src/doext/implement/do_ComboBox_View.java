@@ -2,6 +2,7 @@ package doext.implement;
 
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -9,12 +10,14 @@ import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import core.DoServiceContainer;
 import core.helper.DoJsonHelper;
 import core.helper.DoScriptEngineHelper;
 import core.helper.DoTextHelper;
@@ -38,7 +41,6 @@ import doext.define.do_ComboBox_MAbstract;
  */
 public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_ComboBox_IMethod, DoIModuleTypeID, android.widget.AdapterView.OnItemSelectedListener {
 
-	private ArrayAdapter<String> mAdapter;
 	private String fontStyle;
 	private String fontColor;
 	private String fontSize;
@@ -50,10 +52,12 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 	 * 每个UIview都会引用一个具体的model实例；
 	 */
 	private do_ComboBox_MAbstract model;
+	private MyAdapter mAdapter;
 
 	public do_ComboBox_View(Context context) {
 		super(context);
 		this.setPadding(1, 0, 1, 0);
+		mAdapter = new MyAdapter(context);
 	}
 
 	/**
@@ -122,9 +126,8 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			if (!TextUtils.isEmpty(_items)) {
 				_data = _items.split(",");
 			}
-			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _data);
 			this.setAdapter(mAdapter);
-			setSelection();
+			mAdapter.bindData(_data);
 		}
 
 		if (_changedValues.containsKey("index")) {
@@ -145,24 +148,85 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 
 	}
 
-	private class MyAdapter extends ArrayAdapter<String> {
-		public MyAdapter(Context context, int textViewResourceId, String[] objects) {
-			super(context, textViewResourceId, objects);
+	private class MyAdapter extends BaseAdapter {
+
+		private Object data;
+		private LayoutInflater mInflater;
+
+		public MyAdapter(Context context) {
+			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
+
+		public void bindData(Object _data) {
+			this.data = _data;
+			notifyDataSetChanged();
+		}
+
+		@Override
+		public int getCount() {
+			if (data == null) {
+				return 0;
+			}
+			if (data instanceof DoIListData) {
+				return ((DoIListData) data).getCount();
+			} else {
+				return ((String[]) data).length;
+			}
+		}
+
+		@Override
+		public String getItem(int position) {
+			try {
+				if (data instanceof DoIListData) {
+					Object _childData = ((DoIListData) data).getData(position);
+					if (_childData instanceof JSONObject) {
+						return DoJsonHelper.getString((JSONObject) _childData, "text", "");
+					} else {
+						return _childData.toString();
+					}
+				} else {
+					return ((String[]) data)[position];
+				}
+			} catch (JSONException e) {
+				DoServiceContainer.getLogEngine().writeError("do_ComboBox getItem \n\t", e);
+			}
+			return position + "";
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView _tv = (TextView) super.getView(position, convertView, parent);
+			TextView _tv = (TextView) createViewFromResource(position, convertView, parent);
 			setTextViewStyle(_tv);
 			return _tv;
 		}
 
 		@Override
 		public View getDropDownView(int position, View convertView, ViewGroup parent) {
-			TextView _tv = (TextView) super.getDropDownView(position, convertView, parent);
+			TextView _tv = (TextView) createViewFromResource(position, convertView, parent);
 			setTextViewStyle(_tv);
 			return _tv;
 		}
+
+		private View createViewFromResource(int position, View convertView, ViewGroup parent) {
+			View view;
+			TextView text;
+
+			if (convertView == null) {
+				view = mInflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+			} else {
+				view = convertView;
+			}
+
+			text = (TextView) view;
+			text.setText(getItem(position));
+			return view;
+		}
+
 	}
 
 	private void setTextViewStyle(TextView _tv) {
@@ -228,18 +292,8 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			throw new Exception("do_ComboBox_View data参数无效！");
 		if (_multitonModule instanceof DoIListData) {
 			DoIListData _data = (DoIListData) _multitonModule;
-			int _count = _data.getCount();
-			String[] _newData = new String[_count];
-			for (int i = 0; i < _count; i++) {
-				Object _childData = _data.getData(i);
-				if (_childData instanceof JSONObject) {
-					_newData[i] = DoJsonHelper.getString((JSONObject) _childData, "text", "");
-				} else {
-					_newData[i] = _childData.toString();
-				}
-			}
-			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item, _newData);
 			this.setAdapter(mAdapter);
+			mAdapter.bindData(_data);
 			setSelection();
 		}
 	}
