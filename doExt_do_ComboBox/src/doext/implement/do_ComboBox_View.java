@@ -41,23 +41,24 @@ import doext.define.do_ComboBox_MAbstract;
  */
 public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_ComboBox_IMethod, DoIModuleTypeID, android.widget.AdapterView.OnItemSelectedListener {
 
+	private MyAdapter mAdapter;
 	private String fontStyle;
 	private String fontColor;
 	private String fontSize;
 	private String textFlag;
 	private String textAlign = "left";
 	private int position;
+	private Context mContext;
 
 	/**
 	 * 每个UIview都会引用一个具体的model实例；
 	 */
 	private do_ComboBox_MAbstract model;
-	private MyAdapter mAdapter;
 
 	public do_ComboBox_View(Context context) {
 		super(context);
 		this.setPadding(1, 0, 1, 0);
-		mAdapter = new MyAdapter(context);
+		this.mContext = context;
 	}
 
 	/**
@@ -126,8 +127,10 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			if (!TextUtils.isEmpty(_items)) {
 				_data = _items.split(",");
 			}
+			mAdapter = new MyAdapter(mContext);
 			this.setAdapter(mAdapter);
 			mAdapter.bindData(_data);
+			setSelection();
 		}
 
 		if (_changedValues.containsKey("index")) {
@@ -292,6 +295,7 @@ public class do_ComboBox_View extends Spinner implements DoIUIModuleView, do_Com
 			throw new Exception("do_ComboBox_View data参数无效！");
 		if (_multitonModule instanceof DoIListData) {
 			DoIListData _data = (DoIListData) _multitonModule;
+			mAdapter = new MyAdapter(mContext);
 			this.setAdapter(mAdapter);
 			mAdapter.bindData(_data);
 			setSelection();
